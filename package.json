@@ -1,0 +1,41 @@
+{
+  "name": "hyperdrive",
+  "version": "9.1.1",
+  "description": "Hyperdrive is a secure, real time distributed file system",
+  "main": "index.js",
+  "dependencies": {
+    "append-tree": "^2.0.5",
+    "duplexify": "^3.5.0",
+    "from2": "^2.3.0",
+    "hypercore": "^6.0.0",
+    "inherits": "^2.0.3",
+    "mutexify": "^1.1.0",
+    "protocol-buffers": "^3.2.1",
+    "random-access-file": "^1.5.0",
+    "sodium-native": "^1.8.0",
+    "stream-collector": "^1.0.1",
+    "stream-each": "^1.2.0",
+    "thunky": "^1.0.2",
+    "uint64be": "^2.0.1"
+  },
+  "devDependencies": {
+    "random-access-memory": "^2.3.0",
+    "sodium-signatures": "^2.0.0",
+    "standard": "^9.0.2",
+    "tape": "^4.6.3",
+    "temporary-directory": "^1.0.2"
+  },
+  "scripts": {
+    "test": "standard && tape test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mafintosh/hyperdrive.git"
+  },
+  "author": "Mathias Buus (@mafintosh)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mafintosh/hyperdrive/issues"
+  },
+  "homepage": "https://github.com/mafintosh/hyperdrive"
+}
