@@ -1,7 +1,7 @@
 var tape = require('tape')
 var tmp = require('temporary-directory')
 var create = require('./helpers/create')
-var hyperdrive = require('..')
+var ddrive = require('..')
 
 tape('ram storage', function (t) {
   var archive = create()
@@ -16,7 +16,7 @@ tape('ram storage', function (t) {
 tape('dir storage with resume', function (t) {
   tmp(function (err, dir, cleanup) {
     t.ifError(err)
-    var archive = hyperdrive(dir)
+    var archive = ddrive(dir)
     archive.ready(function () {
       t.ok(archive.metadata.writable, 'archive metadata is writable')
       t.ok(archive.content.writable, 'archive content is writable')
@@ -24,7 +24,7 @@ tape('dir storage with resume', function (t) {
       archive.close(function (err) {
         t.ifError(err)
 
-        var archive2 = hyperdrive(dir)
+        var archive2 = ddrive(dir)
         archive2.ready(function () {
           t.ok(archive2.metadata.writable, 'archive2 metadata is writable')
           t.ok(archive2.content.writable, 'archive2 content is writable')
@@ -46,7 +46,7 @@ tape('dir storage for non-writable archive', function (t) {
     tmp(function (err, dir, cleanup) {
       t.ifError(err)
 
-      var clone = hyperdrive(dir, src.key)
+      var clone = ddrive(dir, src.key)
       clone.on('content', function () {
         t.ok(!clone.metadata.writable, 'clone metadata not writable')
         t.ok(!clone.content.writable, 'clone content not writable')
@@ -65,7 +65,7 @@ tape('dir storage for non-writable archive', function (t) {
 
 tape('dir storage without permissions emits error', function (t) {
   t.plan(1)
-  var archive = hyperdrive('/')
+  var archive = ddrive('/')
   archive.on('error', function (err) {
     t.ok(err, 'got error')
   })
@@ -76,7 +76,7 @@ tape('write and read (sparse)', function (t) {
 
   tmp(function (err, dir, cleanup) {
     t.ifError(err)
-    var archive = hyperdrive(dir)
+    var archive = ddrive(dir)
     archive.on('ready', function () {
       var clone = create(archive.key, {sparse: true})
       clone.on('ready', function () {
