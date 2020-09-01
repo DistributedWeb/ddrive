@@ -1,6 +1,6 @@
 var ram = require('random-access-memory')
-var hyperdrive = require('../../')
+var ddrive = require('../../')
 
 module.exports = function (key, opts) {
-  return hyperdrive(ram, key, opts)
+  return ddrive(ram, key, opts)
 }

@@ -1,13 +1,13 @@
 {
-  "name": "hyperdrive",
-  "version": "9.1.1",
-  "description": "Hyperdrive is a secure, real time distributed file system",
+  "name": "ddrive",
+  "version": "1.0.0",
+  "description": "DDrive is a secure, real time distributed file system",
   "main": "index.js",
   "dependencies": {
     "append-tree": "^2.0.5",
     "duplexify": "^3.5.0",
     "from2": "^2.3.0",
-    "hypercore": "^6.0.0",
+    "ddatabase": "git://github.com/DistributedWeb/ddatabase.git#ccfa5411572d4f2357ffeb248e8b0c301c7685fb",
     "inherits": "^2.0.3",
     "mutexify": "^1.1.0",
     "protocol-buffers": "^3.2.1",
@@ -30,12 +30,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mafintosh/hyperdrive.git"
+    "url": "https://github.com/distributedweb/ddrive.git"
   },
   "author": "Mathias Buus (@mafintosh)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mafintosh/hyperdrive/issues"
+    "url": "https://github.com/distributedweb/ddrive/issues"
   },
-  "homepage": "https://github.com/mafintosh/hyperdrive"
+  "homepage": "https://github.com/distributedweb/ddrive"
 }

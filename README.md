@@ -1,18 +1,18 @@
-# Hyperdrive
+# DDrive
 
-Hyperdrive is a secure, real time distributed file system
+DDrive is a secure, real time distributed file system
 
 ``` js
-npm install hyperdrive
+npm install ddrive
 ```
 
 ## Usage
 
-Hyperdrive aims to implement the same API as Node.js' core fs module.
+DDrive aims to implement the same API as Node.js' core fs module.
 
 ``` js
-var hyperdrive = require('hyperdrive')
-var archive = hyperdrive('./my-first-hyperdrive') // content will be stored in this folder
+var ddrive = require('ddrive')
+var archive = ddrive('./my-first-ddrive') // content will be stored in this folder
 
 archive.writeFile('/hello.txt', 'world', function (err) {
   if (err) throw err
@@ -42,7 +42,7 @@ server.listen(10000)
 
 // ... on another
 
-var clonedArchive = hyperdrive('./my-cloned-hyperdrive', origKey)
+var clonedArchive = ddrive('./my-cloned-ddrive', origKey)
 var socket = net.connect(10000)
 
 socket.pipe(clonedArchive.replicate()).pipe(socket)
@@ -52,9 +52,9 @@ It also comes with build in versioning and real time replication. See more below
 
 ## API
 
-#### `var archive = hyperdrive(storage, [key], [options])`
+#### `var archive = ddrive(storage, [key], [options])`
 
-Create a new hyperdrive. Storage should be a function or a string.
+Create a new ddrive. Storage should be a function or a string.
 
 If storage is a string content will be stored inside that folder.
 
