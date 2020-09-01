@@ -1,23 +1,23 @@
-# Hyperdrive
+# DDrive
 
-#### *Note*: This is a prerelease version of Hyperdrive that's backed by [Hypertrie](https://github.com/mafintosh/hypertrie)
+#### *Note*: This is a prerelease version of DDrive that's backed by [DWebtrie](https://github.com/distributedweb/dwebtrie)
 #### This version is not yet API-complete.
 
-Hyperdrive is a secure, real time distributed file system
+DDrive is a secure, real time distributed file system
 
 ``` js
-npm install hyperdrive@prerelease
+npm install ddrive@prerelease
 ```
 
-[![Build Status](https://travis-ci.org/mafintosh/hyperdrive.svg?branch=master)](https://travis-ci.org/mafintosh/hyperdrive)
+[![Build Status](https://travis-ci.org/mafintosh/ddrive.svg?branch=master)](https://travis-ci.org/mafintosh/ddrive)
 
 ## Usage
 
-Hyperdrive aims to implement the same API as Node.js' core fs module.
+DDrive aims to implement the same API as Node.js' core fs module.
 
 ``` js
-var hyperdrive = require('hyperdrive')
-var archive = hyperdrive('./my-first-hyperdrive') // content will be stored in this folder
+var ddrive = require('ddrive')
+var archive = ddrive('./my-first-ddrive') // content will be stored in this folder
 
 archive.writeFile('/hello.txt', 'world', function (err) {
   if (err) throw err
@@ -47,7 +47,7 @@ server.listen(10000)
 
 // ... on another
 
-var clonedArchive = hyperdrive('./my-cloned-hyperdrive', origKey)
+var clonedArchive = ddrive('./my-cloned-ddrive', origKey)
 var socket = net.connect(10000)
 
 socket.pipe(clonedArchive.replicate()).pipe(socket)
@@ -57,9 +57,9 @@ It also comes with build in versioning and real time replication. See more below
 
 ## API
 
-#### `var archive = hyperdrive(storage, [key], [options])`
+#### `var archive = ddrive(storage, [key], [options])`
 
-Create a new hyperdrive.
+Create a new ddrive.
 
 The `storage` parameter defines how the contents of the archive will be stored. It can be one of the following, depending on how much control you require over how the archive is stored.
 
@@ -69,9 +69,9 @@ The `storage` parameter defines how the contents of the archive will be stored. 
 
   - `name`: the name of the file to be stored
   - `opts`
-    - `key`: the [feed key](https://github.com/mafintosh/hypercore#feedkey) of the underlying Hypercore instance
-    - `discoveryKey`: the [discovery key](https://github.com/mafintosh/hypercore#feeddiscoverykey) of the underlying Hypercore instance
-  - `archive`: the current Hyperdrive instance
+    - `key`: the [feed key](https://github.com/distributedweb/ddatabase#feedkey) of the underlying DDatabase instance
+    - `discoveryKey`: the [discovery key](https://github.com/distributedweb/ddatabase#feeddiscoverykey) of the underlying DDatabase instance
+  - `archive`: the current DDrive instance
 
   The functions need to return a a [`random-access-storage`](https://github.com/random-access-storage/) instance.
 
@@ -81,13 +81,13 @@ Options include:
 {
   sparse: true, // only download data on content feed when it is specifically requested
   sparseMetadata: true // only download data on metadata feed when requested
-  metadataStorageCacheSize: 65536 // how many entries to use in the metadata hypercore's LRU cache
-  contentStorageCacheSize: 65536 // how many entries to use in the content hypercore's LRU cache
+  metadataStorageCacheSize: 65536 // how many entries to use in the metadata ddatabase's LRU cache
+  contentStorageCacheSize: 65536 // how many entries to use in the content ddatabase's LRU cache
   extensions: [], // The list of extension message types to use
 }
 ```
 
-Note that a cloned hyperdrive archive can be "sparse". Usually (by setting `sparse: true`) this means that the content is not downloaded until you ask for it, but the entire metadata feed is still downloaded. If you want a _very_ sparse archive, where even the metadata feed is not downloaded until you request it, then you should _also_ set `sparseMetadata: true`.
+Note that a cloned ddrive archive can be "sparse". Usually (by setting `sparse: true`) this means that the content is not downloaded until you ask for it, but the entire metadata feed is still downloaded. If you want a _very_ sparse archive, where even the metadata feed is not downloaded until you request it, then you should _also_ set `sparseMetadata: true`.
 
 #### `var stream = archive.replicate([options])`
 
@@ -142,7 +142,7 @@ Emitted when a peer has sent you an extension message. The `name` is a string fr
 Emitted when a new peer has been added.
 
 ```js
-const archive = Hyperdrive({
+const archive = DDrive({
   extension: ['example']
 })
 
@@ -173,8 +173,8 @@ Checkout a readonly copy of the archive at an old version. Options are used to c
 
 ```js
 {
-  metadataStorageCacheSize: 65536 // how many entries to use in the metadata hypercore's LRU cache
-  contentStorageCacheSize: 65536 // how many entries to use in the content hypercore's LRU cache
+  metadataStorageCacheSize: 65536 // how many entries to use in the metadata ddatabase's LRU cache
+  contentStorageCacheSize: 65536 // how many entries to use in the content ddatabase's LRU cache
   treeCacheSize: 65536 // how many entries to use in the append-tree's LRU cache
 }
 ```
@@ -344,7 +344,7 @@ Create a symlink from `linkname` to `target`.
 
 #### `archive.mount(name, key, opts, cb)`
 
-Mounts another Hyperdrive at the specified mountpoint.
+Mounts another DDrive at the specified mountpoint.
 
 If a `version` is specified in the options, then the mountpoint will reference a static checkout (it will never update).
 
@@ -357,7 +357,7 @@ Options include:
 
 #### `archive.unmount(name, cb)`
 
-Unmount a previously-mounted Hyperdrive.
+Unmount a previously-mounted DDrive.
 
 #### `archive.createMountStream(opts)`
 
@@ -365,8 +365,8 @@ Create a stream containing content/metadata feeds for all mounted Hyperdrives. E
 ```js
 {
   path: '/',                // The mountpoint
-  metadata: Hypercore(...), // The mounted metadata feed
-  content: Hypercore(...)   // The mounted content feed  
+  metadata: DDatabase(...), // The mounted metadata feed
+  content: DDatabase(...)   // The mounted content feed  
 }
 ```
 

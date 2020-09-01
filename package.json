@@ -1,35 +1,35 @@
 {
-  "name": "hyperdrive",
-  "version": "10.8.10",
-  "description": "Hyperdrive is a secure, real time distributed file system",
+  "name": "ddrive",
+  "version": "3.0.0",
+  "description": "DDrive is a secure, real time distributed file system",
   "main": "index.js",
   "scripts": {
     "test": "tape test/index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mafintosh/hyperdrive.git"
+    "url": "git+https://github.com/distributedweb/ddrive.git"
   },
   "keywords": [
-    "hyperdrive",
-    "hypertrie"
+    "ddrive",
+    "dwebtrie"
   ],
   "author": "Mathias Buus (@mafintosh)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mafintosh/hyperdrive/issues"
+    "url": "https://github.com/distributedweb/ddrive/issues"
   },
-  "homepage": "https://github.com/mafintosh/hyperdrive#readme",
+  "homepage": "https://github.com/distributedweb/ddrive#readme",
   "dependencies": {
     "byte-stream": "^2.1.0",
-    "corestore": "^5.0.0",
+    "dwebstore": "^5.0.0",
     "custom-error-class": "^1.0.0",
     "duplexify": "^3.7.1",
     "filesystem-constants": "^1.0.0",
-    "hypercore-byte-stream": "^1.0.2",
-    "hypercore-protocol": "^7.2.0",
-    "hyperdrive-schemas": "beta",
-    "mountable-hypertrie": "^2.4.0",
+    "ddatabase-byte-stream": "git://github.com/DistributedWeb/ddatabase-byte-stream.git#4cea685a77b97c82893258d79af23936ae05927c",
+    "ddatabase-protocol": "git://github.com/DistributedWeb/ddatabase-protocol.git#a67f5341d359bb9dd8438635dc9d975135f0d861",
+    "ddrive-schemas": "git://github.com/DistributedWeb/ddrive-schemas.git#c39ebb6103163a56179cd3f48ced282f9edf15c5",
+    "mountable-dwebtrie": "git://github.com/DistributedWeb/mountable-dwebtrie.git#fa442f325868f7d5a4bd76d4452e6fde1d8e1baf",
     "mutexify": "^1.2.0",
     "nanoiterator": "^1.2.0",
     "pump": "^3.0.0",

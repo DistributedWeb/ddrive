@@ -1,7 +1,7 @@
 const tape = require('tape')
 const tmp = require('temporary-directory')
 const create = require('./helpers/create')
-const hyperdrive = require('..')
+const ddrive = require('..')
 
 tape('ram storage', function (t) {
   var drive = create()
@@ -16,7 +16,7 @@ tape('ram storage', function (t) {
 tape('dir storage with resume', function (t) {
   tmp(function (err, dir, cleanup) {
     t.ifError(err)
-    var drive = hyperdrive(dir)
+    var drive = ddrive(dir)
     drive.ready(function () {
       t.ok(drive.metadata.writable, 'drive metadata is writable')
       t.ok(drive.contentWritable, 'drive content is writable')
@@ -24,7 +24,7 @@ tape('dir storage with resume', function (t) {
       drive.close(function (err) {
         t.ifError(err)
 
-        var drive2 = hyperdrive(dir)
+        var drive2 = ddrive(dir)
         drive2.ready(function (err) {
           t.error(err, 'no error')
           t.ok(drive2.metadata.writable, 'drive2 metadata is writable')
@@ -47,7 +47,7 @@ tape('dir storage for non-writable drive', function (t) {
     tmp(function (err, dir, cleanup) {
       t.ifError(err)
 
-      var clone = hyperdrive(dir, src.key)
+      var clone = ddrive(dir, src.key)
       clone.ready(function () {
         t.ok(!clone.metadata.writable, 'clone metadata not writable')
         t.ok(!clone.contentWritable, 'clone content not writable')
@@ -67,7 +67,7 @@ tape('dir storage for non-writable drive', function (t) {
 tape('dir storage without permissions emits error', function (t) {
   // TODO: This error should not be emitted twice -- fix error propagation.
   t.plan(1)
-  var drive = hyperdrive('/')
+  var drive = ddrive('/')
   drive.on('error', function (err) {
     t.ok(err, 'got error')
   })
@@ -78,7 +78,7 @@ tape('write and read (sparse)', function (t) {
 
   tmp(function (err, dir, cleanup) {
     t.ifError(err)
-    var drive = hyperdrive(dir)
+    var drive = ddrive(dir)
     drive.on('ready', function () {
       var clone = create(drive.key, { sparse: true })
       clone.on('ready', function () {

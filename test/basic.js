@@ -1,6 +1,6 @@
 var tape = require('tape')
-const hypercoreCrypto = require('hypercore-crypto')
-const Corestore = require('corestore')
+const hypercoreCrypto = require('ddatabase-crypto')
+const DWebstore = require('dwebstore')
 const ram = require('random-access-memory')
 var create = require('./helpers/create')
 
@@ -122,8 +122,8 @@ tape('provide keypair', function (t) {
 
 tape.skip('can reopen when providing a keypair', function (t) {
   const keyPair = hypercoreCrypto.keyPair()
-  const store = new Corestore(ram)
-  var drive = create(keyPair.publicKey, { keyPair, corestore: store })
+  const store = new DWebstore(ram)
+  var drive = create(keyPair.publicKey, { keyPair, dwebstore: store })
 
   drive.on('ready', function () {
     t.ok(drive.writable)
@@ -135,7 +135,7 @@ tape.skip('can reopen when providing a keypair', function (t) {
       console.log('CORE LENGTH BEFORE CLOSE:', drive.metadata.length)
       drive.close(err => {
         t.error(err, 'no error')
-        drive = create(keyPair.publicKey, { keyPair, corestore: store })
+        drive = create(keyPair.publicKey, { keyPair, dwebstore: store })
 
         drive.on('ready', function () {
           console.log('CORE LENGTH:', drive.metadata.length)
