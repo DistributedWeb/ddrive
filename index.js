@@ -1,4 +1,4 @@
-var hypercore = require('hypercore')
+var ddatabase = require('ddatabase')
 var mutexify = require('mutexify')
 var raf = require('random-access-file')
 var thunky = require('thunky')
@@ -20,10 +20,10 @@ var cursor = require('./lib/cursor')
 var DEFAULT_FMODE = (4 | 2 | 0) << 6 | ((4 | 0 | 0) << 3) | (4 | 0 | 0) // rw-r--r--
 var DEFAULT_DMODE = (4 | 2 | 1) << 6 | ((4 | 0 | 1) << 3) | (4 | 0 | 1) // rwxr-xr-x
 
-module.exports = Hyperdrive
+module.exports = DDrive
 
-function Hyperdrive (storage, key, opts) {
-  if (!(this instanceof Hyperdrive)) return new Hyperdrive(storage, key, opts)
+function DDrive (storage, key, opts) {
+  if (!(this instanceof DDrive)) return new DDrive(storage, key, opts)
   events.EventEmitter.call(this)
 
   if (isObject(key)) {
@@ -40,7 +40,7 @@ function Hyperdrive (storage, key, opts) {
 
   this._storages = defaultStorage(this, storage, opts)
 
-  this.metadata = opts.metadata || hypercore(this._storages.metadata, key, {
+  this.metadata = opts.metadata || ddatabase(this._storages.metadata, key, {
     secretKey: opts.secretKey,
     sparse: opts.sparseMetadata,
     createIfMissing: opts.createIfMissing,
@@ -116,29 +116,29 @@ function Hyperdrive (storage, key, opts) {
   }
 }
 
-inherits(Hyperdrive, events.EventEmitter)
+inherits(DDrive, events.EventEmitter)
 
-Object.defineProperty(Hyperdrive.prototype, 'version', {
+Object.defineProperty(DDrive.prototype, 'version', {
   enumerable: true,
   get: function () {
     return this._checkout ? this.tree.version : (this.metadata.length ? this.metadata.length - 1 : 0)
   }
 })
 
-Object.defineProperty(Hyperdrive.prototype, 'writable', {
+Object.defineProperty(DDrive.prototype, 'writable', {
   enumerable: true,
   get: function () {
     return this.metadata.writable
   }
 })
 
-Hyperdrive.prototype._oncontent = function () {
+DDrive.prototype._oncontent = function () {
   if (!this.content || this._emittedContent) return
   this._emittedContent = true
   this.emit('content')
 }
 
-Hyperdrive.prototype._trackLatest = function (cb) {
+DDrive.prototype._trackLatest = function (cb) {
   var self = this
 
   this.ready(function (err) {
@@ -192,7 +192,7 @@ Hyperdrive.prototype._trackLatest = function (cb) {
   }
 }
 
-Hyperdrive.prototype._fetchVersion = function (prev, cb) {
+DDrive.prototype._fetchVersion = function (prev, cb) {
   var self = this
   var version = self.version
   var updated = false
@@ -281,7 +281,7 @@ Hyperdrive.prototype._fetchVersion = function (prev, cb) {
   }
 }
 
-Hyperdrive.prototype._clearDangling = function (a, b, cb) {
+DDrive.prototype._clearDangling = function (a, b, cb) {
   var current = this.tree.checkout(a, {cached: true})
   var latest = this.tree.checkout(b)
   var stream = current.diff(latest, {dels: true, puts: false})
@@ -306,7 +306,7 @@ Hyperdrive.prototype._clearDangling = function (a, b, cb) {
   }
 }
 
-Hyperdrive.prototype.replicate = function (opts) {
+DDrive.prototype.replicate = function (opts) {
   if (!opts) opts = {}
 
   opts.expectedFeeds = 2
@@ -328,21 +328,21 @@ Hyperdrive.prototype.replicate = function (opts) {
   return stream
 }
 
-Hyperdrive.prototype.checkout = function (version, opts) {
+DDrive.prototype.checkout = function (version, opts) {
   if (!opts) opts = {}
   opts._checkout = this._checkout || this
   opts.metadata = this.metadata
   opts.version = version
-  return Hyperdrive(null, null, opts)
+  return DDrive(null, null, opts)
 }
 
-Hyperdrive.prototype.createDiffStream = function (version, opts) {
+DDrive.prototype.createDiffStream = function (version, opts) {
   if (!version) version = 0
   if (typeof version === 'number') version = this.checkout(version)
   return this.tree.diff(version.tree, opts)
 }
 
-Hyperdrive.prototype.download = function (dir, cb) {
+DDrive.prototype.download = function (dir, cb) {
   if (typeof dir === 'function') return this.download('/', dir)
 
   var downloadCount = 1
@@ -387,16 +387,16 @@ Hyperdrive.prototype.download = function (dir, cb) {
   }
 }
 
-Hyperdrive.prototype.history = function (opts) {
+DDrive.prototype.history = function (opts) {
   return this.tree.history(opts)
 }
 
-Hyperdrive.prototype.createCursor = function (name, opts) {
+DDrive.prototype.createCursor = function (name, opts) {
   return cursor(this, name, opts)
 }
 
 // open -> fd
-Hyperdrive.prototype.open = function (name, flags, mode, opts, cb) {
+DDrive.prototype.open = function (name, flags, mode, opts, cb) {
   if (typeof mode === 'object' && mode) return this.open(name, flags, 0, mode, opts)
   if (typeof mode === 'function') return this.open(name, flags, 0, mode)
   if (typeof opts === 'function') return this.open(name, flags, mode, null, opts)
@@ -416,7 +416,7 @@ Hyperdrive.prototype.open = function (name, flags, mode, opts, cb) {
   })
 }
 
-Hyperdrive.prototype.read = function (fd, buf, offset, len, pos, cb) {
+DDrive.prototype.read = function (fd, buf, offset, len, pos, cb) {
   var cursor = this._openFiles[fd - 20]
   if (!cursor) return cb(new Error('Bad file descriptor'))
 
@@ -439,7 +439,7 @@ Hyperdrive.prototype.read = function (fd, buf, offset, len, pos, cb) {
 }
 
 // TODO: move to ./lib
-Hyperdrive.prototype.createReadStream = function (name, opts) {
+DDrive.prototype.createReadStream = function (name, opts) {
   if (!opts) opts = {}
 
   name = normalizePath(name)
@@ -539,7 +539,7 @@ Hyperdrive.prototype.createReadStream = function (name, opts) {
   }
 }
 
-Hyperdrive.prototype.readFile = function (name, opts, cb) {
+DDrive.prototype.readFile = function (name, opts, cb) {
   if (typeof opts === 'function') return this.readFile(name, null, opts)
   if (typeof opts === 'string') opts = {encoding: opts}
   if (!opts) opts = {}
@@ -553,7 +553,7 @@ Hyperdrive.prototype.readFile = function (name, opts, cb) {
   })
 }
 
-Hyperdrive.prototype.createWriteStream = function (name, opts) {
+DDrive.prototype.createWriteStream = function (name, opts) {
   if (!opts) opts = {}
 
   name = normalizePath(name)
@@ -629,7 +629,7 @@ Hyperdrive.prototype.createWriteStream = function (name, opts) {
   return proxy
 }
 
-Hyperdrive.prototype.writeFile = function (name, buf, opts, cb) {
+DDrive.prototype.writeFile = function (name, buf, opts, cb) {
   if (typeof opts === 'function') return this.writeFile(name, buf, null, opts)
   if (typeof opts === 'string') opts = {encoding: opts}
   if (!opts) opts = {}
@@ -646,7 +646,7 @@ Hyperdrive.prototype.writeFile = function (name, buf, opts, cb) {
   stream.end()
 }
 
-Hyperdrive.prototype.mkdir = function (name, opts, cb) {
+DDrive.prototype.mkdir = function (name, opts, cb) {
   if (typeof opts === 'function') return this.mkdir(name, null, opts)
   if (typeof opts === 'number') opts = {mode: opts}
   if (!opts) opts = {}
@@ -678,7 +678,7 @@ Hyperdrive.prototype.mkdir = function (name, opts, cb) {
   })
 }
 
-Hyperdrive.prototype._statDirectory = function (name, opts, cb) {
+DDrive.prototype._statDirectory = function (name, opts, cb) {
   this.tree.list(name, opts, function (err, list) {
     if (name !== '/' && (err || !list.length)) return cb(err || new Error(name + ' could not be found'))
     var st = stat()
@@ -687,7 +687,7 @@ Hyperdrive.prototype._statDirectory = function (name, opts, cb) {
   })
 }
 
-Hyperdrive.prototype.access = function (name, opts, cb) {
+DDrive.prototype.access = function (name, opts, cb) {
   if (typeof opts === 'function') return this.access(name, null, opts)
   if (!opts) opts = {}
   name = normalizePath(name)
@@ -696,7 +696,7 @@ Hyperdrive.prototype.access = function (name, opts, cb) {
   })
 }
 
-Hyperdrive.prototype.exists = function (name, opts, cb) {
+DDrive.prototype.exists = function (name, opts, cb) {
   if (typeof opts === 'function') return this.exists(name, null, opts)
   if (!opts) opts = {}
   this.access(name, opts, function (err) {
@@ -704,7 +704,7 @@ Hyperdrive.prototype.exists = function (name, opts, cb) {
   })
 }
 
-Hyperdrive.prototype.lstat = function (name, opts, cb) {
+DDrive.prototype.lstat = function (name, opts, cb) {
   if (typeof opts === 'function') return this.lstat(name, null, opts)
   if (!opts) opts = {}
   var self = this
@@ -717,13 +717,13 @@ Hyperdrive.prototype.lstat = function (name, opts, cb) {
   })
 }
 
-Hyperdrive.prototype.stat = function (name, opts, cb) {
+DDrive.prototype.stat = function (name, opts, cb) {
   if (typeof opts === 'function') return this.stat(name, null, opts)
   if (!opts) opts = {}
   this.lstat(name, opts, cb)
 }
 
-Hyperdrive.prototype.readdir = function (name, opts, cb) {
+DDrive.prototype.readdir = function (name, opts, cb) {
   if (typeof opts === 'function') return this.readdir(name, null, opts)
 
   name = normalizePath(name)
@@ -735,19 +735,19 @@ Hyperdrive.prototype.readdir = function (name, opts, cb) {
   })
 }
 
-Hyperdrive.prototype._readdirRoot = function (opts, cb) {
+DDrive.prototype._readdirRoot = function (opts, cb) {
   this.tree.list('/', opts, function (_, list) {
     if (list) return cb(null, sanitizeDirs(list))
     cb(null, [])
   })
 }
 
-Hyperdrive.prototype.unlink = function (name, cb) {
+DDrive.prototype.unlink = function (name, cb) {
   name = normalizePath(name)
   this._del(name, cb || noop)
 }
 
-Hyperdrive.prototype.rmdir = function (name, cb) {
+DDrive.prototype.rmdir = function (name, cb) {
   if (!cb) cb = noop
 
   name = normalizePath(name)
@@ -761,7 +761,7 @@ Hyperdrive.prototype.rmdir = function (name, cb) {
   })
 }
 
-Hyperdrive.prototype._del = function (name, cb) {
+DDrive.prototype._del = function (name, cb) {
   var self = this
 
   this._ensureContent(function (err) {
@@ -786,14 +786,14 @@ Hyperdrive.prototype._del = function (name, cb) {
   })
 }
 
-Hyperdrive.prototype._closeFile = function (fd, cb) {
+DDrive.prototype._closeFile = function (fd, cb) {
   var cursor = this._openFiles[fd - 20]
   if (!cursor) return cb(new Error('Bad file descriptor'))
   this._openFiles[fd - 20] = null
   cursor.close(cb)
 }
 
-Hyperdrive.prototype.close = function (fd, cb) {
+DDrive.prototype.close = function (fd, cb) {
   if (typeof fd === 'number') return this._closeFile(fd, cb || noop)
   else cb = fd
   if (!cb) cb = noop
@@ -809,7 +809,7 @@ Hyperdrive.prototype.close = function (fd, cb) {
   })
 }
 
-Hyperdrive.prototype._ensureContent = function (cb) {
+DDrive.prototype._ensureContent = function (cb) {
   var self = this
 
   this.ready(function (err) {
@@ -819,7 +819,7 @@ Hyperdrive.prototype._ensureContent = function (cb) {
   })
 }
 
-Hyperdrive.prototype._loadIndex = function (cb) {
+DDrive.prototype._loadIndex = function (cb) {
   var self = this
 
   if (this._checkout) this._checkout._loadIndex(done)
@@ -831,7 +831,7 @@ Hyperdrive.prototype._loadIndex = function (cb) {
 
     var keyPair = self.metadata.writable && contentKeyPair(self.metadata.secretKey)
     var opts = contentOptions(self, keyPair && keyPair.secretKey)
-    self.content = self._checkout ? self._checkout.content : hypercore(self._storages.content, index.content, opts)
+    self.content = self._checkout ? self._checkout.content : ddatabase(self._storages.content, index.content, opts)
     self.content.on('error', function (err) {
       self.emit('error', err)
     })
@@ -843,7 +843,7 @@ Hyperdrive.prototype._loadIndex = function (cb) {
   }
 }
 
-Hyperdrive.prototype._open = function (cb) {
+DDrive.prototype._open = function (cb) {
   var self = this
 
   this.tree.ready(function (err) {
@@ -873,7 +873,7 @@ Hyperdrive.prototype._open = function (cb) {
     if (!self.content) {
       var keyPair = contentKeyPair(self.metadata.secretKey)
       var opts = contentOptions(self, keyPair.secretKey)
-      self.content = hypercore(self._storages.content, keyPair.publicKey, opts)
+      self.content = ddatabase(self._storages.content, keyPair.publicKey, opts)
       self.content.on('error', function (err) {
         self.emit('error', err)
       })
@@ -881,12 +881,12 @@ Hyperdrive.prototype._open = function (cb) {
 
     self.content.ready(function () {
       if (self.metadata.has(0)) return cb(new Error('Index already written'))
-      self.metadata.append(messages.Index.encode({type: 'hyperdrive', content: self.content.key}), cb)
+      self.metadata.append(messages.Index.encode({type: 'ddrive', content: self.content.key}), cb)
     })
   }
 }
 
-Hyperdrive.prototype.extension = function (name, message) {
+DDrive.prototype.extension = function (name, message) {
   this.metadata.extension(name, message)
 }
 
@@ -969,7 +969,7 @@ function noDots (entry) {
 
 function contentKeyPair (secretKey) {
   var seed = new Buffer(sodium.crypto_sign_SEEDBYTES)
-  var context = new Buffer('hyperdri') // 8 byte context
+  var context = new Buffer('patriots') // 8 byte context
   var keyPair = {
     publicKey: new Buffer(sodium.crypto_sign_PUBLICKEYBYTES),
     secretKey: new Buffer(sodium.crypto_sign_SECRETKEYBYTES)
