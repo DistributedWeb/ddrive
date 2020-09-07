@@ -22,7 +22,7 @@
   "homepage": "https://github.com/distributedweb/ddrive#readme",
   "dependencies": {
     "byte-stream": "^2.1.0",
-    "dwebstore": "^5.0.0",
+    "dwebstore": "git://github.com/DistributedWeb/dwebstore.git#03772a70db1a813fab16825366b97530a843c4c7",
     "custom-error-class": "^1.0.0",
     "duplexify": "^3.7.1",
     "filesystem-constants": "^1.0.0",
