@@ -1,6 +1,6 @@
 {
   "name": "ddrive",
-  "version": "beta",
+  "version": "1.0.0",
   "description": "ddrive is a secure, real time distributed file system",
   "main": "index.js",
   "dependencies": {
