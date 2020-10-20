@@ -1,5 +1,5 @@
 # DDrive
-[![Build Status](https://travis-ci.org/distributedweb/ddrive.svg?branch=master)](https://travis-ci.org/distributedweb/ddrive)
+[![Build Status](https://travis-ci.com/DistributedWeb/ddrive.svg?branch=master)](https://travis-ci.org/DistributedWeb/ddrive)
 
 DDrive is a secure, real-time distributed file system designed for easy P2P file sharing.
 
