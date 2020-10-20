@@ -1,5 +1,5 @@
 # DDrive
-[![Build Status](https://travis-ci.org/ddatabase-protocol/ddrive.svg?branch=master)](https://travis-ci.org/ddatabase-protocol/ddrive)
+[![Build Status](https://travis-ci.org/distributedweb/ddrive.svg?branch=master)](https://travis-ci.org/distributedweb/ddrive)
 
 DDrive is a secure, real-time distributed file system designed for easy P2P file sharing.
 
@@ -12,13 +12,13 @@ It has a handful of cool features:
 * __Version Tagging__: You can assign string names to DDrive versions and store these within the drive, making it straightforward to switch between semantically-meaningful versions.
 
 DDrive can also be used in a variety of ways:
-* [__The Daemon__](https://github.com/ddatabase-protocol/ddrive-daemon): The DDrive daemon provides both a gRPC API for managing remote Hyperdrives, and a FUSE API that turns Hyperdrives into normal folders on your computer.
-* [__The Client__](https://github.com/ddatabase-protocol/ddrive-daemon-client): A Node.js client for the daemon. With this you can build services targeting remote drives.
+* [__The Daemon__](https://github.com/distributedweb/ddrive-daemon): The DDrive daemon provides both a gRPC API for managing remote Hyperdrives, and a FUSE API that turns Hyperdrives into normal folders on your computer.
+* [__The Client__](https://github.com/distributedweb/ddrive-daemon-client): A Node.js client for the daemon. With this you can build services targeting remote drives.
 * [__Beaker__](https://dbrowser.com): An experimental browser that has first-class support for DDrive.
 * [__Standalone__](#api): DDrive has flexible storage/networking interfaces, making it easy to embed within larger projects.
 
 ## Installation
-If you're looking for a "batteries included" experience, check out the [DDrive daemon](https://github.com/ddatabase-protocol/ddrive-daemon).
+If you're looking for a "batteries included" experience, check out the [DDrive daemon](https://github.com/distributedweb/ddrive-daemon).
 
 For standalone use in your modules, you can install through NPM:
 ``` js
@@ -79,7 +79,7 @@ The `storage` parameter defines how the contents of the drive will be stored. It
 
 - If you pass in a string, the drive content will be stored in a folder at the given path.
 - You can also pass in a function. This function will be called with the name of each of the required files for the drive, and needs to return a [`random-access-storage`](https://github.com/random-access-storage/) instance.
-- If you require complete control, you can also pass in a [dwebstore](https://github.com/andrewosh/dwebstore) instance (or an API-compatible replacement).
+- If you require complete control, you can also pass in a [dwebstore](https://github.com/distributedweb/dwebstore) instance (or an API-compatible replacement).
 
   - `name`: the name of the file to be stored
   - `opts`
@@ -177,7 +177,7 @@ Emitted when the drive has been closed.
 
 ### Extension Management
 
-DDrive supports [ddatabase](https://github.com/ddatabase-protocol/ddatabase#ext--feedregisterextensionname-handlers) extensions, letting you plug custom logic into a drive's replication streams.
+DDrive supports [ddatabase](https://github.com/distributedweb/ddatabase#ext--feedregisterextensionname-handlers) extensions, letting you plug custom logic into a drive's replication streams.
 
 #### `ext = drive.registerExtension(name, handlers)`
 
