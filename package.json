@@ -1,7 +1,7 @@
 {
   "name": "ddrive",
   "version": "4.0.0",
-  "description": "DDrive is a secure, real time distributed file system",
+  "description": "Distributed file system built on dDatabase.",
   "main": "index.js",
   "scripts": {
     "test": "tape test/index.js",
@@ -15,7 +15,7 @@
     "ddrive",
     "dwebtrie"
   ],
-  "author": "Mathias Buus (@mafintosh)",
+  "author": "Peeps Labs <peepslabs@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/distributedweb/ddrive/issues"
