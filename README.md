@@ -1,24 +1,24 @@
-# DDrive
+# dDrive
 [![Build Status](https://travis-ci.com/DistributedWeb/ddrive.svg?branch=master)](https://travis-ci.org/DistributedWeb/ddrive)
 
-DDrive is a secure, real-time distributed file system designed for easy P2P file sharing.
+dDrive is a secure, real-time distributed file system designed for easy P2P file sharing.
 
 It has a handful of cool features:
 * __Version Controlled__: Files are versioned by default, making it easy to see historical changes and prevent data loss.
-* __Composable__: Using our mount system, Hyperdrives can be nested within other Hyperdrives, enabling powerful multi-user collaboration tools.
-* __Shareable with One Link__: You can share an entire DDrive with others by sending them a single 32-byte key. If you'd like more granularity, our mount system enables the fine-grained sharing of specific directories.
+* __Composable__: Using our mount system, dDrives can be nested within other dDrives, enabling powerful multi-user collaboration tools.
+* __Shareable with One Link__: You can share an entire dDrive with others by sending them a single 32-byte key. If you'd like more granularity, our mount system enables the fine-grained sharing of specific directories.
 * __Sparse Downloading__ By default, readers only download the portions of files they need, on demand. You can stream media from friends without jumping through hoops! Seeking is snappy and there's no buffering.
 * __Fast Lookups__: File metadata is stored in a distributed trie structure, meaning files can be located with minimal network lookups.
-* __Version Tagging__: You can assign string names to DDrive versions and store these within the drive, making it straightforward to switch between semantically-meaningful versions.
+* __Version Tagging__: You can assign string names to dDrive versions and store these within the drive, making it straightforward to switch between semantically-meaningful versions.
 
-DDrive can also be used in a variety of ways:
-* [__The Daemon__](https://github.com/distributedweb/ddrive-daemon): The DDrive daemon provides both a gRPC API for managing remote Hyperdrives, and a FUSE API that turns Hyperdrives into normal folders on your computer.
+dDrive can also be used in a variety of ways:
+* [__The Daemon__](https://github.com/distributedweb/ddrive-daemon): The dDrive daemon provides both a gRPC API for managing remote dDrives, and a FUSE API that turns dDrives into normal folders on your computer.
 * [__The Client__](https://github.com/distributedweb/ddrive-daemon-client): A Node.js client for the daemon. With this you can build services targeting remote drives.
-* [__Beaker__](https://dbrowser.com): An experimental browser that has first-class support for DDrive.
-* [__Standalone__](#api): DDrive has flexible storage/networking interfaces, making it easy to embed within larger projects.
+* [__Beaker__](https://dbrowser.com): An experimental browser that has first-class support for dDrive.
+* [__Standalone__](https://github.com/distributedweb/ddrive): dDrive has flexible storage/networking interfaces, making it easy to embed within larger projects.
 
 ## Installation
-If you're looking for a "batteries included" experience, check out the [DDrive daemon](https://github.com/distributedweb/ddrive-daemon).
+If you're looking for a "batteries included" experience, check out the [dDrive daemon](https://github.com/distributedweb/ddrive-daemon).
 
 For standalone use in your modules, you can install through NPM:
 ``` js
@@ -27,7 +27,7 @@ npm install ddrive
 
 ## Usage
 
-DDrive aims to implement the same API as Node.js' core `fs` module, and mirrors many POSIX APIs.
+dDrive aims to implement the same API as Node.js' core `fs` module, and mirrors many POSIX APIs.
 
 ``` js
 var ddrive = require('ddrive')
@@ -46,7 +46,7 @@ drive.writeFile('/hello.txt', 'world', function (err) {
 })
 ```
 
-Hyperdrives can easily be replicated to other machines over any stream-based transport layer! 
+dDrives can easily be replicated to other machines over any stream-based transport layer! 
 
 ``` js
 var net = require('net')
@@ -67,7 +67,7 @@ var socket = net.connect(10000)
 socket.pipe(clonedDrive.replicate()).pipe(socket)
 ```
 
-It also comes with build in versioning, live replication (where the replication streams remain open, syncing new changes), and nested DDrive mounting. See more below.
+It also comes with build in versioning, live replication (where the replication streams remain open, syncing new changes), and nested dDrive mounting. See more below.
 
 ## API
 
@@ -83,9 +83,9 @@ The `storage` parameter defines how the contents of the drive will be stored. It
 
   - `name`: the name of the file to be stored
   - `opts`
-    - `key`: the [feed key](https://github.com/distributedweb/ddatabase#feedkey) of the underlying DDatabase instance
-    - `discoveryKey`: the [discovery key](https://github.com/distributedweb/ddatabase#feeddiscoverykey) of the underlying DDatabase instance
-  - `drive`: the current DDrive instance
+    - `key`: the [feed key](https://github.com/distributedweb/ddatabase#feedkey) of the underlying dDatabase instance
+    - `discoveryKey`: the [discovery key](https://github.com/distributedweb/ddatabase#feeddiscoverykey) of the underlying dDatabase instance
+  - `drive`: the current dDrive instance
 
 Options include:
 
@@ -99,10 +99,10 @@ Options include:
 
 For more storage configuration, you can also provide any dwebstore option.
 
-Note that a cloned ddrive drive is fully "sparse" by default, meaning that the `sparse` and `sparseMetadata` options are both true. This is usually the best way to use DDrive, but you can also set these options to false to enable eager downloading of both the content and the metadata. If you'd like more control over download strategies, you can use the `download` method directly.
+Note that a cloned ddrive drive is fully "sparse" by default, meaning that the `sparse` and `sparseMetadata` options are both true. This is usually the best way to use dDrive, but you can also set these options to false to enable eager downloading of both the content and the metadata. If you'd like more control over download strategies, you can use the `download` method directly.
 
 ### Replication
-DDrive replication occurs through streams, meaning you can pipe a drive's replication stream into any stream-based transport system you'd like. If you have many nested Hyperdrives mounted within a parent drive, `replicate` will sync all children as well.
+dDrive replication occurs through streams, meaning you can pipe a drive's replication stream into any stream-based transport system you'd like. If you have many nested dDrives mounted within a parent drive, `replicate` will sync all children as well.
 
 #### `var stream = drive.replicate([options])`
 
@@ -177,7 +177,7 @@ Emitted when the drive has been closed.
 
 ### Extension Management
 
-DDrive supports [ddatabase](https://github.com/distributedweb/ddatabase#ext--feedregisterextensionname-handlers) extensions, letting you plug custom logic into a drive's replication streams.
+dDrive supports [ddatabase](https://github.com/distributedweb/ddatabase) extensions, letting you plug custom logic into a drive's replication streams.
 
 #### `ext = drive.registerExtension(name, handlers)`
 
@@ -205,16 +205,16 @@ Send an extension message to a specific peer.
 Send a message to every peer you are connected to.
 
 ### Version Control
-Since DDrive is built on top of append-only logs, old versions of files are preserved by default. You can get a read-only snapshot of a drive at any point in time with the `checkout` function, which takes a version number. Additionally, you can tag versions with string names, making them more parseable.
+Since dDrive is built on top of append-only logs, old versions of files are preserved by default. You can get a read-only snapshot of a drive at any point in time with the `checkout` function, which takes a version number. Additionally, you can tag versions with string names, making them more parseable.
 
 #### `var oldDrive = drive.checkout(version, [opts])`
 
-Checkout a readonly copy of the drive at an old version. Options for the checkout are duplicated from the parent by default, but you can also pass in additional DDrive options.
+Checkout a readonly copy of the drive at an old version. Options for the checkout are duplicated from the parent by default, but you can also pass in additional dDrive options.
 
 #### `drive.createTag(name, [version], cb)`
 Create a tag that maps to a given version. If a version is not provided, the current version will be used.
 
-Tags are stored inside the drive's "hidden trie," meaning they're not enumerable using DDrive's standard filesystem methods. They will replicate with all the other data in the drive, though.
+Tags are stored inside the drive's "hidden trie," meaning they're not enumerable using dDrive's standard filesystem methods. They will replicate with all the other data in the drive, though.
 
 #### `drive.getTaggedVersion(name, cb)`
 Return the version corresponding to a tag.
@@ -395,7 +395,7 @@ Options include:
 If `wait` is set to `true`, this function will wait for data to be downloaded. If false, will return an error.
 
 ### File Descriptors
-If you want more control over your reads and writes, you can open file descriptors. The file descriptor API mirrors Node's descriptors. Importantly, DDrive does not currently handle random-access writes. Similarly, appends require the previous contents of the file to be duplicated, though this all happens internally. Random-access reads, on the other hand, are fully supported and very fast.
+If you want more control over your reads and writes, you can open file descriptors. The file descriptor API mirrors Node's descriptors. Importantly, dDrive does not currently handle random-access writes. Similarly, appends require the previous contents of the file to be duplicated, though this all happens internally. Random-access reads, on the other hand, are fully supported and very fast.
 
 We're still investigating more performant solutions to random-access write and appends, and it's high on our priority list! 
 
@@ -418,13 +418,13 @@ Write from a buffer into a file descriptor. Similar to fs.write.
 Create a symlink from `linkname` to `target`.
 
 ### DDrive Mounting
-DDrive supports "mounting" other Hyperdrives at paths within a parent drive. This means that if your friend has a photo album drive, you can nest their drive within your own by calling `myDrive.mount('photos/my-friends-album', <my-friends-album-key>)`.
+dDrive supports "mounting" other dDrives at paths within a parent drive. This means that if your friend has a photo album drive, you can nest their drive within your own by calling `myDrive.mount('photos/my-friends-album', <my-friends-album-key>)`.
 
 This feature is useful for composing larger collections out of smaller shareable units, or for aggregating content from many users into one aggregate drive. One pattern you might want to try is a "group" where each user has a structured drive with standard directory names within a parent (i.e. `my-group/userA/docs`, `my-group/userB/docs`). Using this pattern, it's easy to aggregate all "docs" with a recursive readdir over the group.
 
 #### `drive.mount(name, key, opts, cb)`
 
-Mounts another DDrive at the specified mountpoint.
+Mounts another dDrive at the specified mountpoint.
 
 If a `version` is specified in the options, then the mountpoint will reference a static checkout (it will never update).
 
@@ -437,11 +437,11 @@ Options include:
 
 #### `drive.unmount(name, cb)`
 
-Unmount a previously-mounted DDrive.
+Unmount a previously-mounted dDrive.
 
 #### `drive.createMountStream(opts)`
 
-Create a stream containing content/metadata feeds for all mounted Hyperdrives. Each entry in the stream has the form:
+Create a stream containing content/metadata feeds for all mounted dDrives. Each entry in the stream has the form:
 ```js
 {
   path: '/',                // The mountpoint
